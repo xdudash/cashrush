@@ -40,8 +40,10 @@ workflows:
       - name: Set up code signing (Codemagic CLI)
         script: |
           keychain initialize
+          ssh-keygen -t rsa -b 2048 -m PEM -f /tmp/cert_key -q -N ""
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE --create
+            --type IOS_APP_STORE --create \
+            --certificate-key @file:/tmp/cert_key
           keychain add-certificates
           xcode-project use-profiles
       - name: Build signed IPA
