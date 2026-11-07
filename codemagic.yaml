@@ -19,27 +19,43 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.goapps.cashrush   # ← должен совпадать с BUNDLE_ID
       vars:
-        BUNDLE_ORG: com.goapps                   # BUNDLE_ORG + ".cashrush" = Bundle ID
-        APP_NAME: Cash Rush
+        BUNDLE_ID: com.goapps.cashrush
+        TEAM_ID: 6TU82NKL53
     scripts:
-      - name: Зависимости
+      - name: Dependencies
         script: flutter pub get
-      - name: Иконка приложения
+      - name: App icon
         script: dart run flutter_launcher_icons
       - name: Pods
         script: find . -name "Podfile" -execdir pod install \;
-      - name: Подпись
-        script: xcode-project use-profiles
-      - name: Собрать IPA
+      - name: Build Flutter iOS (no codesign)
         script: |
-          flutter build ipa --release \
-            --build-name=1.0.0 \
-            --build-number=$BUILD_NUMBER \
-            --export-options-plist=/Users/builder/export_options.plist
+          flutter build ios --release --no-codesign \
+            --build-name=1.0.0 --build-number=$BUILD_NUMBER
+      - name: Archive and export with automatic signing (App Store Connect API key)
+        script: |
+          set -e
+          KEY=/tmp/AuthKey.p8
+          printf '%s' "$APP_STORE_CONNECT_PRIVATE_KEY" > "$KEY"
+          AUTH="-allowProvisioningUpdates -authenticationKeyPath $KEY -authenticationKeyID $APP_STORE_CONNECT_KEY_IDENTIFIER -authenticationKeyIssuerID $APP_STORE_CONNECT_ISSUER_ID"
+          ARCHIVE=$CM_BUILD_DIR/build/ios/archive/Runner.xcarchive
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath "$ARCHIVE" \
+            DEVELOPMENT_TEAM=$TEAM_ID CODE_SIGN_STYLE=Automatic $AUTH archive
+          cat > /tmp/ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>uploadSymbols</key><true/>
+          </dict></plist>
+          EOF
+          mkdir -p build/ios/ipa
+          xcodebuild -exportArchive -archivePath "$ARCHIVE" -exportPath build/ios/ipa \
+            -exportOptionsPlist /tmp/ExportOptions.plist $AUTH
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
