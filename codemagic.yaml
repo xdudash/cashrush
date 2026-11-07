@@ -29,40 +29,26 @@ workflows:
         script: dart run flutter_launcher_icons
       - name: Pods
         script: find . -name "Podfile" -execdir pod install \;
-      - name: Build Flutter iOS (no codesign)
+      - name: Key diagnostics
         script: |
-          flutter build ios --release --no-codesign \
-            --build-name=1.0.0 --build-number=$BUILD_NUMBER
-      - name: Archive and export with automatic signing (App Store Connect API key)
-        script: |
-          set -e
-          KEY=/tmp/AuthKey.p8
           python3 - <<'PY'
-          import os, re, textwrap
-          k = os.environ.get('APP_STORE_CONNECT_PRIVATE_KEY', '').replace('\\n', '\n')
-          body = re.sub(r'-----[A-Z ]+-----|\s', '', k)
-          print('key body chars:', len(body))
-          print('key id set:', bool(os.environ.get('APP_STORE_CONNECT_KEY_IDENTIFIER')), 'issuer set:', bool(os.environ.get('APP_STORE_CONNECT_ISSUER_ID')))
-          open('/tmp/AuthKey.p8', 'w').write('-----BEGIN PRIVATE KEY-----\n' + '\n'.join(textwrap.wrap(body, 64)) + '\n-----END PRIVATE KEY-----\n')
+          import os
+          k = os.environ.get('APP_STORE_CONNECT_PRIVATE_KEY', '')
+          print('raw length:', len(k), 'lines:', len(k.splitlines()), 'has literal backslash-n:', '\\n' in k)
+          print('line lengths:', [len(l) for l in k.splitlines()][:10])
           PY
-          AUTH="-allowProvisioningUpdates -authenticationKeyPath $KEY -authenticationKeyID $APP_STORE_CONNECT_KEY_IDENTIFIER -authenticationKeyIssuerID $APP_STORE_CONNECT_ISSUER_ID"
-          ARCHIVE=$CM_BUILD_DIR/build/ios/archive/Runner.xcarchive
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release \
-            -destination 'generic/platform=iOS' -archivePath "$ARCHIVE" \
-            DEVELOPMENT_TEAM=$TEAM_ID CODE_SIGN_STYLE=Automatic $AUTH archive
-          cat > /tmp/ExportOptions.plist <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0"><dict>
-            <key>method</key><string>app-store-connect</string>
-            <key>teamID</key><string>$TEAM_ID</string>
-            <key>signingStyle</key><string>automatic</string>
-            <key>uploadSymbols</key><true/>
-          </dict></plist>
-          EOF
-          mkdir -p build/ios/ipa
-          xcodebuild -exportArchive -archivePath "$ARCHIVE" -exportPath build/ios/ipa \
-            -exportOptionsPlist /tmp/ExportOptions.plist $AUTH
+      - name: Set up code signing (Codemagic CLI)
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles
+      - name: Build signed IPA
+        script: |
+          flutter build ipa --release \
+            --build-name=1.0.0 --build-number=$BUILD_NUMBER \
+            --export-options-plist=/Users/builder/export_options.plist
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
