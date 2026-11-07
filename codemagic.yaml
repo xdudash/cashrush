@@ -37,7 +37,14 @@ workflows:
         script: |
           set -e
           KEY=/tmp/AuthKey.p8
-          printf '%s' "$APP_STORE_CONNECT_PRIVATE_KEY" > "$KEY"
+          python3 - <<'PY'
+          import os, re, textwrap
+          k = os.environ.get('APP_STORE_CONNECT_PRIVATE_KEY', '').replace('\\n', '\n')
+          body = re.sub(r'-----[A-Z ]+-----|\s', '', k)
+          print('key body chars:', len(body))
+          print('key id set:', bool(os.environ.get('APP_STORE_CONNECT_KEY_IDENTIFIER')), 'issuer set:', bool(os.environ.get('APP_STORE_CONNECT_ISSUER_ID')))
+          open('/tmp/AuthKey.p8', 'w').write('-----BEGIN PRIVATE KEY-----\n' + '\n'.join(textwrap.wrap(body, 64)) + '\n-----END PRIVATE KEY-----\n')
+          PY
           AUTH="-allowProvisioningUpdates -authenticationKeyPath $KEY -authenticationKeyID $APP_STORE_CONNECT_KEY_IDENTIFIER -authenticationKeyIssuerID $APP_STORE_CONNECT_ISSUER_ID"
           ARCHIVE=$CM_BUILD_DIR/build/ios/archive/Runner.xcarchive
           xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release \
