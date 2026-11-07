@@ -12,7 +12,7 @@ class OverviewTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: kBg,
-      navigationBar: const CupertinoNavigationBar(middle: Text('📊 Обзор'), backgroundColor: kBg),
+      navigationBar: const CupertinoNavigationBar(middle: Text('📊 Overview'), backgroundColor: kBg),
       child: SafeArea(
         child: ListenableBuilder(
           listenable: game,
@@ -26,15 +26,15 @@ class OverviewTab extends StatelessWidget {
             children.add(_chart());
             children.add(_market());
             if (game.events.isNotEmpty) {
-              children.add(SectionTitle('Входящие (${game.events.length})'));
+              children.add(SectionTitle('Inbox (${game.events.length})'));
               for (final e in game.events) {
                 children.add(_eventCard(e));
               }
             }
-            children.add(const SectionTitle('Цели'));
+            children.add(const SectionTitle('Goals'));
             final active = game.activeMissions;
             if (active.isEmpty) {
-              children.add(const Panel(child: Text('Все цели выполнены. Вы легенда! 🏆')));
+              children.add(const Panel(child: Text('All goals complete. You are a legend! 🏆')));
             }
             for (final m in active) {
               children.add(_missionCard(m));
@@ -64,21 +64,21 @@ class OverviewTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Капитал', style: TextStyle(color: kGrey, fontSize: 13)),
+          const Text('Capital', style: TextStyle(color: kGrey, fontSize: 13)),
           Text(money(game.netWorth), style: const TextStyle(fontSize: 38, fontWeight: FontWeight.w800)),
           const SizedBox(height: 10),
           Row(
             children: [
-              _stat('Наличные', money(game.cash), game.cash < 0 ? kRed : null),
-              _stat('Долг', money(game.debt), game.debt > 0 ? kAccent : null),
-              _stat('Прибыль', rate(game.profitRate), game.profitRate >= 0 ? kGreen : kRed),
+              _stat('Cash', money(game.cash), game.cash < 0 ? kRed : null),
+              _stat('Debt', money(game.debt), game.debt > 0 ? kAccent : null),
+              _stat('Profit', rate(game.profitRate), game.profitRate >= 0 ? kGreen : kRed),
             ],
           ),
           const SizedBox(height: 12),
           CupertinoSlidingSegmentedControl<int>(
             groupValue: game.speed,
             children: const {
-              1: Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('Скорость ×1')),
+              1: Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('Speed ×1')),
               2: Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('×2')),
               5: Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('×5')),
             },
@@ -90,7 +90,7 @@ class OverviewTab extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Text(
-                '⚠️ Вы в минусе! Банкротство при ${money(-game.bankruptcyLine)}. Снизьте расходы или поднимите цены.',
+                '⚠️ You are in the red! Bankruptcy at ${money(-game.bankruptcyLine)}. Cut costs or raise prices.',
                 style: const TextStyle(color: kRed, fontSize: 13),
               ),
             ),
@@ -104,12 +104,12 @@ class OverviewTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Динамика прибыли', style: TextStyle(color: kGrey, fontSize: 13)),
+          const Text('Profit trend', style: TextStyle(color: kGrey, fontSize: 13)),
           const SizedBox(height: 8),
           if (game.history.length < 2)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 20),
-              child: Text('График появится, когда бизнес поработает.', style: TextStyle(color: kGrey)),
+              child: Text('The chart appears once your business has been running.', style: TextStyle(color: kGrey)),
             )
           else
             Sparkline(values: game.history),
@@ -129,14 +129,14 @@ class OverviewTab extends StatelessWidget {
             children: [
               Pill(game.phaseLabel, color: phaseColor),
               const SizedBox(width: 8),
-              Pill('Сырьё ×${game.supplyIdx.toStringAsFixed(2)}', color: supplyColor),
+              Pill('Supplies ×${game.supplyIdx.toStringAsFixed(2)}', color: supplyColor),
             ],
           ),
           const SizedBox(height: 10),
           Text(game.headline, style: const TextStyle(fontSize: 14)),
           if (game.effects.isNotEmpty) ...[
             const SizedBox(height: 8),
-            Text('Активных эффектов: ${game.effects.length}', style: const TextStyle(color: kGrey, fontSize: 12)),
+            Text('Active effects: ${game.effects.length}', style: const TextStyle(color: kGrey, fontSize: 12)),
           ],
         ],
       ),
@@ -184,14 +184,14 @@ class OverviewTab extends StatelessWidget {
               children: [
                 Text(m.title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 4),
-                Text('Награда ${money(m.reward)}', style: const TextStyle(color: kGrey, fontSize: 13)),
+                Text('Reward ${money(m.reward)}', style: const TextStyle(color: kGrey, fontSize: 13)),
               ],
             ),
           ),
           if (done)
             SizedBox(
               width: 110,
-              child: ActionButton(label: 'Забрать', color: kGreen, onTap: () => game.claim(m)),
+              child: ActionButton(label: 'Claim', color: kGreen, onTap: () => game.claim(m)),
             )
           else
             const Text('🎯', style: TextStyle(fontSize: 24)),

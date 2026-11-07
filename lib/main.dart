@@ -115,27 +115,27 @@ class _HomeScreenState extends State<HomeScreen> {
       g.seenIntro = true;
       g.save();
       _dialog(
-        'Добро пожаловать! 💸',
-        'Вы начинаете с \$1 500. Откройте кофейню во вкладке «Бизнесы», наймите сотрудников и подберите цену.\n\n'
-            'Следите за спросом, репутацией и рынком, принимайте решения во «Входящих», развивайте бизнесы и стройте империю.',
-        'Поехали!',
+        'Welcome! 💸',
+        'You start with \$1,500. Open a coffee shop in the Businesses tab, hire staff and set the right price.\n\n'
+            'Watch demand, reputation and the market, make decisions in your Inbox, upgrade your businesses and build an empire.',
+        'Let\'s go!',
       );
       return;
     }
     if (g.bankruptFlag) {
       g.bankruptFlag = false;
       _dialog(
-        'Банкротство 💥',
-        'Долги съели бизнес, и всё пришлось закрыть. Вы начинаете заново с \$1 500, но улучшения и наследие остались. '
-            'Следите за расходами и не уходите глубоко в минус.',
-        'Начать заново',
+        'Bankruptcy 💥',
+        'Debts swallowed your business and everything had to close. You start over with \$1,500, but your upgrades and legacy remain. '
+            'Keep an eye on expenses and avoid going deep into the red.',
+        'Start over',
       );
       return;
     }
     if (g.offlineEarned > 0) {
       final amount = g.offlineEarned;
       g.clearOffline();
-      _dialog('С возвращением! 👋', 'Пока вас не было, бизнес заработал\n+${money(amount)}', 'Забрать');
+      _dialog('Welcome back! 👋', 'While you were away, your business earned\n+${money(amount)}', 'Collect');
     }
   }
 
@@ -147,11 +147,11 @@ class _HomeScreenState extends State<HomeScreen> {
       tabBar: CupertinoTabBar(
         backgroundColor: kPanel,
         items: const [
-          BottomNavigationBarItem(icon: Text('📊', style: TextStyle(fontSize: 22)), label: 'Обзор'),
-          BottomNavigationBarItem(icon: Text('🏢', style: TextStyle(fontSize: 22)), label: 'Бизнесы'),
-          BottomNavigationBarItem(icon: Text('🔬', style: TextStyle(fontSize: 22)), label: 'Развитие'),
-          BottomNavigationBarItem(icon: Text('🏦', style: TextStyle(fontSize: 22)), label: 'Банк'),
-          BottomNavigationBarItem(icon: Text('👤', style: TextStyle(fontSize: 22)), label: 'Профиль'),
+          BottomNavigationBarItem(icon: Text('📊', style: TextStyle(fontSize: 22)), label: 'Overview'),
+          BottomNavigationBarItem(icon: Text('🏢', style: TextStyle(fontSize: 22)), label: 'Businesses'),
+          BottomNavigationBarItem(icon: Text('🔬', style: TextStyle(fontSize: 22)), label: 'Upgrades'),
+          BottomNavigationBarItem(icon: Text('🏦', style: TextStyle(fontSize: 22)), label: 'Bank'),
+          BottomNavigationBarItem(icon: Text('👤', style: TextStyle(fontSize: 22)), label: 'Profile'),
         ],
       ),
       tabBuilder: (context, index) {

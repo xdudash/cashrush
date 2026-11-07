@@ -14,7 +14,7 @@ class BusinessTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: kBg,
-      navigationBar: const CupertinoNavigationBar(middle: Text('🏢 Бизнесы'), backgroundColor: kBg),
+      navigationBar: const CupertinoNavigationBar(middle: Text('🏢 Businesses'), backgroundColor: kBg),
       child: SafeArea(
         child: ListenableBuilder(
           listenable: game,
@@ -22,17 +22,17 @@ class BusinessTab extends StatelessWidget {
             final children = <Widget>[];
             if (game.bizList.isEmpty) {
               children.add(const Panel(
-                child: Text('У вас пока нет бизнеса. Откройте первый ниже 👇', style: TextStyle(fontSize: 15)),
+                child: Text('You have no businesses yet. Open your first one below 👇', style: TextStyle(fontSize: 15)),
               ));
             } else {
-              children.add(const SectionTitle('Ваши бизнесы'));
+              children.add(const SectionTitle('Your businesses'));
               for (final b in game.bizList) {
                 children.add(_bizCard(context, b));
               }
             }
             final locked = businessDefs.where((d) => game.bizOf(d.id) == null).toList();
             if (locked.isNotEmpty) {
-              children.add(const SectionTitle('Открыть новый'));
+              children.add(const SectionTitle('Open a new one'));
               for (final d in locked) {
                 children.add(_openCard(d));
               }
@@ -46,10 +46,10 @@ class BusinessTab extends StatelessWidget {
 
   String _status(Biz b) {
     final m = b.m;
-    if (m.coverage < 1) return '⚠️ Не хватает персонала';
-    if (m.demand > m.capacity * 1.05) return '🔥 Спрос выше мощности';
-    if (m.demand < m.capacity * 0.6) return '📉 Слабый спрос';
-    return '✅ Работает ровно';
+    if (m.coverage < 1) return '⚠️ Not enough staff';
+    if (m.demand > m.capacity * 1.05) return '🔥 Demand exceeds capacity';
+    if (m.demand < m.capacity * 0.6) return '📉 Weak demand';
+    return '✅ Running smoothly';
   }
 
   Widget _bizCard(BuildContext context, Biz b) {
@@ -71,7 +71,7 @@ class BusinessTab extends StatelessWidget {
                 Text(b.def.name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
                 const SizedBox(height: 2),
                 Text(
-                  'Ур. ${b.level}  ·  ${stars(b.rep)}',
+                  'Lv. ${b.level}  ·  ${stars(b.rep)}',
                   style: const TextStyle(color: kAccent, fontSize: 13),
                 ),
                 const SizedBox(height: 4),
@@ -119,12 +119,12 @@ class BusinessTab extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           if (lockedByWorth)
-            Text('🔒 Нужен капитал ${money(d.unlockNetWorth)}', style: const TextStyle(color: kGrey, fontSize: 14))
+            Text('🔒 Requires net worth ${money(d.unlockNetWorth)}', style: const TextStyle(color: kGrey, fontSize: 14))
           else
             SizedBox(
               width: double.infinity,
               child: ActionButton(
-                label: 'Открыть за ${money(d.openCost)}',
+                label: 'Open for ${money(d.openCost)}',
                 enabled: canBuy,
                 color: kGreen,
                 onTap: () => game.openBusiness(d),

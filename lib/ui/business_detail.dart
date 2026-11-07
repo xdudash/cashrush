@@ -27,7 +27,7 @@ class BusinessDetailPage extends StatelessWidget {
           builder: (context, _) {
             final b = game.bizOf(defId);
             if (b == null) {
-              return const Center(child: Text('Бизнес закрыт', style: TextStyle(color: kGrey)));
+              return const Center(child: Text('Business closed', style: TextStyle(color: kGrey)));
             }
             return ListView(
               padding: const EdgeInsets.only(top: 8, bottom: 32),
@@ -54,7 +54,7 @@ class BusinessDetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Уровень ${b.level} из ${GameState.maxLevel}',
+                Text('Level ${b.level} of ${GameState.maxLevel}',
                     style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
                 const SizedBox(height: 4),
                 Text('${stars(b.rep)}  ${b.rep.toStringAsFixed(1)}',
@@ -76,36 +76,36 @@ class BusinessDetailPage extends StatelessWidget {
     final top = max(0.001, max(m.demand, m.capacity));
     final tips = <String>[];
     if (m.coverage < 1) {
-      tips.add('Не хватает персонала — мощность упала. Наймите сотрудников.');
+      tips.add('Not enough staff — capacity dropped. Hire more people.');
     }
     if (m.demand > m.capacity * 1.05) {
-      tips.add('Спрос выше мощности: клиенты уходят. Поднимите уровень, наймите людей или поднимите цену.');
+      tips.add('Demand exceeds capacity: customers are leaving. Upgrade, hire people or raise the price.');
     }
     if (m.demand < m.capacity * 0.6) {
-      tips.add('Спрос слабый: снизьте цену, вложитесь в рекламу или качество.');
+      tips.add('Demand is weak: lower the price, or invest in marketing or quality.');
     }
     if (m.profit < 0) {
-      tips.add('Бизнес убыточен! Проверьте цену и расходы.');
+      tips.add('This business is losing money! Check your price and costs.');
     }
     return Panel(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Показатели', style: TextStyle(color: kGrey, fontSize: 13)),
+          const Text('Stats', style: TextStyle(color: kGrey, fontSize: 13)),
           const SizedBox(height: 10),
-          Text('Спрос: ${fmtNum(m.demand)} кл/с', style: const TextStyle(fontSize: 13)),
+          Text('Demand: ${fmtNum(m.demand)} cust/s', style: const TextStyle(fontSize: 13)),
           const SizedBox(height: 4),
           BarMeter(value: m.demand / top, color: kBlue),
           const SizedBox(height: 8),
-          Text('Мощность: ${fmtNum(m.capacity)} кл/с', style: const TextStyle(fontSize: 13)),
+          Text('Capacity: ${fmtNum(m.capacity)} cust/s', style: const TextStyle(fontSize: 13)),
           const SizedBox(height: 4),
           BarMeter(value: m.capacity / top, color: kAccent),
           const SizedBox(height: 12),
-          StatLine('Выручка', rate(m.revenue)),
-          StatLine('Сырьё', '-${money(m.supplies)}/с'),
-          StatLine('Зарплаты', '-${money(m.wages)}/с'),
-          StatLine('Аренда', '-${money(m.rent)}/с'),
-          StatLine('Реклама', '-${money(m.marketing)}/с'),
+          StatLine('Revenue', rate(m.revenue)),
+          StatLine('Supplies', '-${money(m.supplies)}/s'),
+          StatLine('Wages', '-${money(m.wages)}/s'),
+          StatLine('Rent', '-${money(m.rent)}/s'),
+          StatLine('Marketing', '-${money(m.marketing)}/s'),
           if (tips.isNotEmpty) ...[
             const SizedBox(height: 8),
             for (final t in tips)
@@ -125,10 +125,10 @@ class BusinessDetailPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Цена', style: TextStyle(color: kGrey, fontSize: 13)),
+          const Text('Price', style: TextStyle(color: kGrey, fontSize: 13)),
           const SizedBox(height: 6),
           Text(
-            '${money(b.def.price * b.mult)}  (×${b.mult.toStringAsFixed(2)} от справедливой)',
+            '${money(b.def.price * b.mult)}  (×${b.mult.toStringAsFixed(2)} of fair price)',
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
           CupertinoSlider(
@@ -138,14 +138,14 @@ class BusinessDetailPage extends StatelessWidget {
             onChanged: b.manager ? null : (v) => game.setMult(b, v),
           ),
           Text(
-            'Прогноз прибыли при такой цене: ${rate(forecast)}',
+            'Projected profit at this price: ${rate(forecast)}',
             style: TextStyle(fontSize: 13, color: forecast >= 0 ? kGreen : kRed),
           ),
           const SizedBox(height: 6),
           Text(
             b.manager
-                ? '🤝 Менеджер сам подбирает лучшую цену.'
-                : 'Дорого — клиентов меньше и репутация падает. Дёшево — выручка меньше. Качество позволяет брать больше.',
+                ? '🤝 The manager sets the best price automatically.'
+                : 'Too expensive: fewer customers and reputation drops. Too cheap: less revenue. Quality lets you charge more.',
             style: const TextStyle(color: kGrey, fontSize: 12),
           ),
         ],
@@ -162,12 +162,12 @@ class BusinessDetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Персонал', style: TextStyle(color: kGrey, fontSize: 13)),
+                const Text('Staff', style: TextStyle(color: kGrey, fontSize: 13)),
                 const SizedBox(height: 4),
-                Text('${b.staff} из ${b.slots}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                Text('${b.staff} of ${b.slots}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
                 const SizedBox(height: 2),
                 Text(
-                  'Найм ${money(game.hireCost(b))} · зарплата ${money(b.def.wage)}/с',
+                  'Hire ${money(game.hireCost(b))} · wage ${money(b.def.wage)}/s',
                   style: const TextStyle(color: kGrey, fontSize: 12),
                 ),
               ],
@@ -195,14 +195,14 @@ class BusinessDetailPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Развитие', style: TextStyle(color: kGrey, fontSize: 13)),
+          const Text('Upgrades', style: TextStyle(color: kGrey, fontSize: 13)),
           const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
                 child: ActionButton(
-                  label: maxLvl ? 'Макс. уровень' : 'Уровень ${b.level + 1}',
-                  sub: maxLvl ? null : '${money(game.levelCost(b))} · спрос и мощность',
+                  label: maxLvl ? 'Max level' : 'Level ${b.level + 1}',
+                  sub: maxLvl ? null : '${money(game.levelCost(b))} · demand and capacity',
                   enabled: !maxLvl && game.cash >= game.levelCost(b),
                   onTap: () => game.levelUp(b),
                 ),
@@ -210,8 +210,8 @@ class BusinessDetailPage extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: ActionButton(
-                  label: maxQ ? 'Макс. качество' : 'Качество ${b.quality + 1}',
-                  sub: maxQ ? null : '${money(game.qualityCost(b))} · цена и репутация',
+                  label: maxQ ? 'Max quality' : 'Quality ${b.quality + 1}',
+                  sub: maxQ ? null : '${money(game.qualityCost(b))} · price and reputation',
                   enabled: !maxQ && game.cash >= game.qualityCost(b),
                   onTap: () => game.upgradeQuality(b),
                 ),
@@ -223,8 +223,8 @@ class BusinessDetailPage extends StatelessWidget {
             children: [
               Expanded(
                 child: ActionButton(
-                  label: maxM ? 'Макс. реклама' : 'Реклама ${b.marketing + 1}',
-                  sub: maxM ? null : '${money(game.marketingCost(b))} · +15% спроса',
+                  label: maxM ? 'Max marketing' : 'Marketing ${b.marketing + 1}',
+                  sub: maxM ? null : '${money(game.marketingCost(b))} · +15% demand',
                   enabled: !maxM && game.cash >= game.marketingCost(b),
                   onTap: () => game.upgradeMarketing(b),
                 ),
@@ -232,8 +232,8 @@ class BusinessDetailPage extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: ActionButton(
-                  label: b.manager ? 'Менеджер нанят' : 'Менеджер',
-                  sub: b.manager ? null : '${money(game.managerCost(b))} · авто-цена, +10% мощности',
+                  label: b.manager ? 'Manager hired' : 'Manager',
+                  sub: b.manager ? null : '${money(game.managerCost(b))} · auto-pricing, +10% capacity',
                   enabled: !b.manager && game.cash >= game.managerCost(b),
                   color: kGreen,
                   onTap: () => game.hireManager(b),
@@ -243,7 +243,7 @@ class BusinessDetailPage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'Качество ${b.quality}/${GameState.maxQuality} · Реклама ${b.marketing}/${GameState.maxMarketing}',
+            'Quality ${b.quality}/${GameState.maxQuality} · Marketing ${b.marketing}/${GameState.maxMarketing}',
             style: const TextStyle(color: kGrey, fontSize: 12),
           ),
         ],

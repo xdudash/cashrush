@@ -14,7 +14,7 @@ class BankTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: kBg,
-      navigationBar: const CupertinoNavigationBar(middle: Text('🏦 Банк'), backgroundColor: kBg),
+      navigationBar: const CupertinoNavigationBar(middle: Text('🏦 Bank'), backgroundColor: kBg),
       child: SafeArea(
         child: ListenableBuilder(
           listenable: game,
@@ -38,13 +38,13 @@ class BankTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Капитал', style: TextStyle(color: kGrey, fontSize: 13)),
+          const Text('Capital', style: TextStyle(color: kGrey, fontSize: 13)),
           const SizedBox(height: 8),
-          StatLine('Наличные', money(game.cash), color: game.cash < 0 ? kRed : null),
-          StatLine('Бизнесы (60% стоимости)', money(game.assetValue * 0.6)),
-          StatLine('Долг', '-${money(game.debt)}', color: game.debt > 0 ? kAccent : null),
+          StatLine('Cash', money(game.cash), color: game.cash < 0 ? kRed : null),
+          StatLine('Businesses (60% of value)', money(game.assetValue * 0.6)),
+          StatLine('Debt', '-${money(game.debt)}', color: game.debt > 0 ? kAccent : null),
           Container(height: 1, margin: const EdgeInsets.symmetric(vertical: 8), color: kPanel2),
-          StatLine('Чистый капитал', money(game.netWorth), color: kGreen),
+          StatLine('Net worth', money(game.netWorth), color: kGreen),
         ],
       ),
     );
@@ -57,18 +57,18 @@ class BankTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Кредит', style: TextStyle(color: kGrey, fontSize: 13)),
+          const Text('Loan', style: TextStyle(color: kGrey, fontSize: 13)),
           const SizedBox(height: 8),
-          StatLine('Лимит', money(game.creditLimit)),
-          StatLine('Доступно', money(avail)),
-          StatLine('Ставка', '0.6% в минуту'),
+          StatLine('Limit', money(game.creditLimit)),
+          StatLine('Available', money(avail)),
+          StatLine('Rate', '0.6% per minute'),
           const SizedBox(height: 6),
           const Text(
-            'Кредит ускоряет рост, но проценты списываются постоянно. Минус на счёте стоит ещё дороже: при глубоком минусе — банкротство.',
+            'A loan speeds up growth, but interest is charged continuously. Overdrafts cost even more: going too deep into the red means bankruptcy.',
             style: TextStyle(color: kGrey, fontSize: 12),
           ),
           const SizedBox(height: 12),
-          const Text('Взять в долг', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+          const Text('Borrow', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -87,7 +87,7 @@ class BankTab extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          const Text('Погасить', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+          const Text('Repay', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -95,7 +95,7 @@ class BankTab extends StatelessWidget {
                 Expanded(
                   child: ActionButton(
                     label: money(repayMax * f),
-                    sub: f == 1.0 ? 'всё возможное' : '${(f * 100).round()}%',
+                    sub: f == 1.0 ? 'max' : '${(f * 100).round()}%',
                     enabled: repayMax * f >= 1,
                     color: kGreen,
                     onTap: () => game.repay(repayMax * f),
@@ -116,35 +116,35 @@ class BankTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('IPO: выйти на биржу', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+          const Text('IPO: go public', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
           Text(
-            'Продайте компанию и начните заново. За каждые очки наследия вы навсегда получаете +5% к выручке и +\$2 000 к стартовому капиталу. '
-            'Доступно от капитала ${money(GameState.prestigeNetWorth)}.',
+            'Sell the company and start over. Each legacy point permanently gives you +5% revenue and +\$2,000 starting capital. '
+            'Available from a net worth of ${money(GameState.prestigeNetWorth)}.',
             style: const TextStyle(color: kGrey, fontSize: 13),
           ),
           const SizedBox(height: 10),
-          StatLine('Очки наследия сейчас', '${game.legacy} ⭐'),
-          StatLine('Получите за IPO', can ? '+${game.prestigePoints} ⭐' : '—', color: can ? kGreen : null),
+          StatLine('Legacy points now', '${game.legacy} ⭐'),
+          StatLine('You get from IPO', can ? '+${game.prestigePoints} ⭐' : '—', color: can ? kGreen : null),
           const SizedBox(height: 10),
           SizedBox(
             width: double.infinity,
             child: ActionButton(
-              label: can ? 'Провести IPO' : 'Пока рано',
+              label: can ? 'Go public' : 'Too early',
               enabled: can,
               color: kAccent,
               onTap: () {
                 showCupertinoDialog<void>(
                   context: context,
                   builder: (ctx) => CupertinoAlertDialog(
-                    title: const Text('Провести IPO?'),
+                    title: const Text('Go public?'),
                     content: Text(
-                      'Бизнесы, деньги и улучшения обнулятся. Вы получите +${game.prestigePoints} ⭐ наследия навсегда.',
+                      'Your businesses, cash and upgrades will reset. You will get +${game.prestigePoints} ⭐ legacy permanently.',
                     ),
                     actions: [
                       CupertinoDialogAction(
                         onPressed: () => Navigator.of(ctx).pop(),
-                        child: const Text('Отмена'),
+                        child: const Text('Cancel'),
                       ),
                       CupertinoDialogAction(
                         isDestructiveAction: true,
@@ -152,7 +152,7 @@ class BankTab extends StatelessWidget {
                           Navigator.of(ctx).pop();
                           game.prestige();
                         },
-                        child: const Text('Провести'),
+                        child: const Text('Confirm'),
                       ),
                     ],
                   ),

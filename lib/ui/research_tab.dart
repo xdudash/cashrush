@@ -13,7 +13,7 @@ class ResearchTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: kBg,
-      navigationBar: const CupertinoNavigationBar(middle: Text('🔬 Развитие'), backgroundColor: kBg),
+      navigationBar: const CupertinoNavigationBar(middle: Text('🔬 Upgrades'), backgroundColor: kBg),
       child: SafeArea(
         child: ListenableBuilder(
           listenable: game,
@@ -24,7 +24,7 @@ class ResearchTab extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.fromLTRB(20, 4, 20, 12),
                   child: Text(
-                    'Улучшения действуют сразу на все ваши бизнесы.',
+                    'Upgrades apply to all of your businesses at once.',
                     style: TextStyle(color: kGrey, fontSize: 14),
                   ),
                 ),
@@ -64,7 +64,7 @@ class ResearchTab extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              Pill('Ур. $lvl/${t.maxLevel}', color: kAccent),
+              Pill('Lv. $lvl/${t.maxLevel}', color: kAccent),
               const SizedBox(width: 8),
               if (lvl > 0) Pill(t.effect(lvl), color: kGreen),
             ],
@@ -73,8 +73,8 @@ class ResearchTab extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ActionButton(
-              label: maxed ? 'Максимум' : 'Улучшить за ${money(cost)}',
-              sub: maxed ? null : 'Следующий уровень: ${t.effect(lvl + 1)}',
+              label: maxed ? 'Maxed' : 'Upgrade for ${money(cost)}',
+              sub: maxed ? null : 'Next level: ${t.effect(lvl + 1)}',
               enabled: !maxed && game.cash >= cost,
               onTap: () => game.buyTech(t),
             ),

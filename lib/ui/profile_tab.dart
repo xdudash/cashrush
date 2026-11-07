@@ -12,14 +12,14 @@ class ProfileTab extends StatelessWidget {
   String _time(double seconds) {
     final h = (seconds / 3600).floor();
     final m = ((seconds % 3600) / 60).floor();
-    return h > 0 ? '$h ч $m мин' : '$m мин';
+    return h > 0 ? '$h h $m min' : '$m min';
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: kBg,
-      navigationBar: const CupertinoNavigationBar(middle: Text('👤 Профиль'), backgroundColor: kBg),
+      navigationBar: const CupertinoNavigationBar(middle: Text('👤 Profile'), backgroundColor: kBg),
       child: SafeArea(
         child: ListenableBuilder(
           listenable: game,
@@ -30,18 +30,18 @@ class ProfileTab extends StatelessWidget {
                 Panel(
                   child: Column(
                     children: [
-                      StatLine('Чистый капитал', money(game.netWorth)),
-                      StatLine('Всего заработано', money(game.lifetimeProfit)),
-                      StatLine('Бизнесов', '${game.bizList.length} из ${businessDefs.length}'),
-                      StatLine('Сотрудников', '${game.totalStaff}'),
-                      StatLine('Очки наследия', '${game.legacy} ⭐ (+${game.legacy * 5}% к выручке)'),
-                      StatLine('IPO проведено', '${game.prestiges}'),
-                      StatLine('Банкротств', '${game.bankruptcies}'),
-                      StatLine('Время в игре', _time(game.playSeconds)),
+                      StatLine('Net worth', money(game.netWorth)),
+                      StatLine('Total earned', money(game.lifetimeProfit)),
+                      StatLine('Businesses', '${game.bizList.length} of ${businessDefs.length}'),
+                      StatLine('Employees', '${game.totalStaff}'),
+                      StatLine('Legacy points', '${game.legacy} ⭐ (+${game.legacy * 5}% revenue)'),
+                      StatLine('IPOs completed', '${game.prestiges}'),
+                      StatLine('Bankruptcies', '${game.bankruptcies}'),
+                      StatLine('Play time', _time(game.playSeconds)),
                     ],
                   ),
                 ),
-                const SectionTitle('Все цели'),
+                const SectionTitle('All goals'),
                 Panel(
                   child: Column(
                     children: [
@@ -49,12 +49,12 @@ class ProfileTab extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SectionTitle('Настройки'),
+                const SectionTitle('Settings'),
                 Panel(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Вибрация', style: TextStyle(fontSize: 16)),
+                      const Text('Haptics', style: TextStyle(fontSize: 16)),
                       CupertinoSwitch(value: game.haptics, onChanged: game.setHaptics),
                     ],
                   ),
@@ -62,7 +62,7 @@ class ProfileTab extends StatelessWidget {
                 Panel(
                   onTap: () => _confirmReset(context),
                   child: const Text(
-                    'Сбросить весь прогресс',
+                    'Reset all progress',
                     style: TextStyle(color: kRed, fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
@@ -100,12 +100,12 @@ class ProfileTab extends StatelessWidget {
     showCupertinoDialog<void>(
       context: context,
       builder: (ctx) => CupertinoAlertDialog(
-        title: const Text('Сбросить всё?'),
-        content: const Text('Весь прогресс, включая наследие, будет удалён без возможности восстановления.'),
+        title: const Text('Reset everything?'),
+        content: const Text('All progress, including legacy, will be permanently deleted.'),
         actions: [
           CupertinoDialogAction(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Отмена'),
+            child: const Text('Cancel'),
           ),
           CupertinoDialogAction(
             isDestructiveAction: true,
@@ -113,7 +113,7 @@ class ProfileTab extends StatelessWidget {
               Navigator.of(ctx).pop();
               game.resetAll();
             },
-            child: const Text('Сбросить'),
+            child: const Text('Reset'),
           ),
         ],
       ),

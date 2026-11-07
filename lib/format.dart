@@ -28,7 +28,7 @@ String money(double v) {
 
 String rate(double v) {
   final sign = v >= 0 ? '+' : '-';
-  return '$sign\$${fmtNum(v.abs())}/с';
+  return '$sign\$${fmtNum(v.abs())}/s';
 }
 
 String stars(double r) {

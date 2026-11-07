@@ -130,22 +130,22 @@ class Mission {
 }
 
 final missions = <Mission>[
-  Mission('m1', 'Открой первый бизнес', 200, (g) => g.bizList.isNotEmpty),
-  Mission('m2', 'Найми 4 сотрудников', 300, (g) => g.totalStaff >= 4),
-  Mission('m3', 'Подними качество до 2 уровня', 400, (g) => g.bizList.any((b) => b.quality >= 2)),
-  Mission('m4', 'Выйди на прибыль \$5 в секунду', 600, (g) => g.profitRate >= 5),
-  Mission('m5', 'Купи первое улучшение в «Развитии»', 1500, (g) => g.techTotal >= 1),
-  Mission('m6', 'Открой 3 разных бизнеса', 2500, (g) => g.bizList.length >= 3),
-  Mission('m7', 'Возьми кредит и полностью верни его', 3000, (g) => g.repaidLoan),
-  Mission('m8', 'Найми менеджера', 5000, (g) => g.bizList.any((b) => b.manager)),
-  Mission('m9', 'Капитал \$100 тыс.', 10000, (g) => g.netWorth >= 1e5),
-  Mission('m10', 'Прибыль \$100 в секунду', 15000, (g) => g.profitRate >= 100),
-  Mission('m11', 'Открой 5 бизнесов', 60000, (g) => g.bizList.length >= 5),
-  Mission('m12', 'Капитал \$1 млн', 100000, (g) => g.netWorth >= 1e6),
-  Mission('m13', 'Прибыль \$2 тыс. в секунду', 400000, (g) => g.profitRate >= 2000),
-  Mission('m14', 'Открой все 8 бизнесов', 2000000, (g) => g.bizList.length >= businessDefs.length),
-  Mission('m15', 'Капитал \$50 млн', 3000000, (g) => g.netWorth >= 5e7),
-  Mission('m16', 'Проведи первое IPO', 5000000, (g) => g.prestiges >= 1),
+  Mission('m1', 'Open your first business', 200, (g) => g.bizList.isNotEmpty),
+  Mission('m2', 'Hire 4 employees', 300, (g) => g.totalStaff >= 4),
+  Mission('m3', 'Raise quality to level 2', 400, (g) => g.bizList.any((b) => b.quality >= 2)),
+  Mission('m4', 'Reach \$5 profit per second', 600, (g) => g.profitRate >= 5),
+  Mission('m5', 'Buy your first upgrade', 1500, (g) => g.techTotal >= 1),
+  Mission('m6', 'Open 3 different businesses', 2500, (g) => g.bizList.length >= 3),
+  Mission('m7', 'Take out a loan and repay it in full', 3000, (g) => g.repaidLoan),
+  Mission('m8', 'Hire a manager', 5000, (g) => g.bizList.any((b) => b.manager)),
+  Mission('m9', 'Net worth \$100K', 10000, (g) => g.netWorth >= 1e5),
+  Mission('m10', 'Profit \$100 per second', 15000, (g) => g.profitRate >= 100),
+  Mission('m11', 'Open 5 businesses', 60000, (g) => g.bizList.length >= 5),
+  Mission('m12', 'Net worth \$1M', 100000, (g) => g.netWorth >= 1e6),
+  Mission('m13', 'Profit \$2K per second', 400000, (g) => g.profitRate >= 2000),
+  Mission('m14', 'Open all 8 businesses', 2000000, (g) => g.bizList.length >= businessDefs.length),
+  Mission('m15', 'Net worth \$50M', 3000000, (g) => g.netWorth >= 5e7),
+  Mission('m16', 'Complete your first IPO', 5000000, (g) => g.prestiges >= 1),
 ];
 
 class GameState extends ChangeNotifier {
@@ -182,7 +182,7 @@ class GameState extends ChangeNotifier {
   double phaseLeft = 150;
   double supplyIdx = 1.0;
   double _supplyTimer = 0;
-  String headline = 'Рынок спокоен. Самое время открывать бизнес.';
+  String headline = 'The market is calm. A great time to open a business.';
   final List<Effect> effects = [];
 
   // ---- События ----
@@ -211,7 +211,7 @@ class GameState extends ChangeNotifier {
   double get netWorth => cash + assetValue * 0.6 - debt;
 
   double get econFactor => phase == 1 ? 1.2 : (phase == 2 ? 0.75 : 1.0);
-  String get phaseLabel => phase == 1 ? 'Бум 📈' : (phase == 2 ? 'Спад 📉' : 'Стабильно ➖');
+  String get phaseLabel => phase == 1 ? 'Boom 📈' : (phase == 2 ? 'Slump 📉' : 'Stable ➖');
 
   double get creditLimit => max(1000.0, netWorth * 0.5) * (1 + 0.3 * techLevel('credit'));
   double get creditAvailable => max(0.0, creditLimit - debt);
@@ -425,16 +425,16 @@ class GameState extends ChangeNotifier {
       }
       phaseLeft = 120 + _rng.nextDouble() * 180;
       const boom = [
-        'Экономика на подъёме: люди тратят больше!',
-        'Бум потребления — спрос вырос на 20%.',
+        'The economy is booming: people spend more!',
+        'Consumer boom: demand is up 20%.',
       ];
       const bust = [
-        'Кризис: покупатели экономят, спрос упал.',
-        'Рецессия. Держитесь за качество и не раздувайте расходы.',
+        'Crisis: shoppers are saving, demand has fallen.',
+        'Recession. Stick to quality and keep costs under control.',
       ];
       const calm = [
-        'Рынок успокоился. Спрос вернулся в норму.',
-        'Стабильный период — время для инвестиций.',
+        'The market has calmed down. Demand is back to normal.',
+        'A stable period: time to invest.',
       ];
       final list = phase == 1 ? boom : (phase == 2 ? bust : calm);
       headline = list[_rng.nextInt(list.length)];
@@ -610,7 +610,7 @@ class GameState extends ChangeNotifier {
     if (claimed.contains(m.id) || !m.test(this)) return false;
     claimed.add(m.id);
     cash += m.reward;
-    showToast('🎯 Цель выполнена: +${money(m.reward)}');
+    showToast('🎯 Goal complete: +${money(m.reward)}');
     buzz();
     return true;
   }
@@ -672,10 +672,10 @@ class GameState extends ChangeNotifier {
           id: _eventId++,
           type: 'inspection',
           emoji: '🕵️',
-          title: 'Проверка: $name',
-          body: 'Инспектор нашёл мелкие нарушения. Уладить сейчас за ${money(base)} или рискнуть: штраф может быть втрое больше.',
-          optA: 'Уладить ${money(base)}',
-          optB: 'Рискнуть',
+          title: 'Inspection: $name',
+          body: 'An inspector found minor violations. Settle now for ${money(base)} or take a risk: the fine could be three times higher.',
+          optA: 'Settle ${money(base)}',
+          optB: 'Take the risk',
           p: {'cost': base, 'biz': b.def.id},
         );
         break;
@@ -684,10 +684,10 @@ class GameState extends ChangeNotifier {
           id: _eventId++,
           type: 'blogger',
           emoji: '🎥',
-          title: 'Блогер предлагает рекламу',
-          body: 'Известный блогер снимет обзор на «$name». Спрос вырастет на 50% на 2,5 минуты.',
-          optA: 'Заказать ${money(base)}',
-          optB: 'Отказаться',
+          title: 'A blogger offers an ad',
+          body: 'A popular blogger will review "$name". Demand will rise 50% for 2.5 minutes.',
+          optA: 'Order ${money(base)}',
+          optB: 'Decline',
           p: {'cost': base, 'biz': b.def.id},
         );
         break;
@@ -697,10 +697,10 @@ class GameState extends ChangeNotifier {
           id: _eventId++,
           type: 'supplier',
           emoji: '📦',
-          title: 'Выгодный контракт',
-          body: 'Поставщик предлагает фиксированные цены: себестоимость −30% на 4 минуты во всех бизнесах.',
-          optA: 'Подписать ${money(supplierCost)}',
-          optB: 'Отказаться',
+          title: 'Great contract',
+          body: 'A supplier offers fixed prices: costs −30% for 4 minutes across all businesses.',
+          optA: 'Sign ${money(supplierCost)}',
+          optB: 'Decline',
           p: {'cost': supplierCost},
         );
         break;
@@ -709,10 +709,10 @@ class GameState extends ChangeNotifier {
           id: _eventId++,
           type: 'competitor',
           emoji: '⚔️',
-          title: 'Конкурент рядом с «$name»',
-          body: 'Напротив открылся конкурент. Акция удержит клиентов, иначе спрос просядет на 20% на 3 минуты.',
-          optA: 'Акция ${money(base)}',
-          optB: 'Принять удар',
+          title: 'A competitor near "$name"',
+          body: 'A competitor opened across the street. A promotion will keep your customers, otherwise demand drops 20% for 3 minutes.',
+          optA: 'Promo ${money(base)}',
+          optB: 'Take the hit',
           p: {'cost': base, 'biz': b.def.id},
         );
         break;
@@ -722,10 +722,10 @@ class GameState extends ChangeNotifier {
           id: _eventId++,
           type: 'raise',
           emoji: '🙋',
-          title: 'Сотрудники просят премию',
-          body: 'Команда «$name» хочет премию. Выплатите — вырастет репутация. Откажете — кто-то может уволиться.',
-          optA: 'Выплатить ${money(raiseCost)}',
-          optB: 'Отказать',
+          title: 'Staff ask for a bonus',
+          body: 'The "$name" team wants a bonus. Pay it and reputation grows. Refuse and someone may quit.',
+          optA: 'Pay ${money(raiseCost)}',
+          optB: 'Refuse',
           p: {'cost': raiseCost, 'biz': b.def.id},
         );
         break;
@@ -735,10 +735,10 @@ class GameState extends ChangeNotifier {
           id: _eventId++,
           type: 'investor',
           emoji: '🤝',
-          title: 'Предложение инвестора',
-          body: 'Инвестор даёт ${money(investorOffer)} сразу, но заберёт 10% выручки на 6 минут.',
-          optA: 'Взять ${money(investorOffer)}',
-          optB: 'Отказаться',
+          title: 'Investor offer',
+          body: 'An investor gives you ${money(investorOffer)} right now, but takes 10% of revenue for 6 minutes.',
+          optA: 'Take ${money(investorOffer)}',
+          optB: 'Decline',
           p: {'offer': investorOffer},
         );
         break;
@@ -747,9 +747,9 @@ class GameState extends ChangeNotifier {
           id: _eventId++,
           type: 'viral',
           emoji: '📱',
-          title: 'Вирусный пост!',
-          body: 'О «$name» написали в соцсетях. Спрос +60% на 2 минуты — бесплатно!',
-          optA: 'Отлично!',
+          title: 'Viral post!',
+          body: '"$name" is trending on social media. Demand +60% for 2 minutes, for free!',
+          optA: 'Awesome!',
           p: {'biz': b.def.id},
         );
     }
@@ -765,7 +765,7 @@ class GameState extends ChangeNotifier {
     var pick = choice;
     if (pick == 0 && payTypes.contains(e.type) && cash < cost) {
       if (!auto) {
-        showToast('Не хватает денег: нужно ${money(cost)}');
+        showToast('Not enough cash: need ${money(cost)}');
         return;
       }
       pick = e.optB == null ? 0 : 1;
@@ -776,49 +776,49 @@ class GameState extends ChangeNotifier {
       case 'inspection':
         if (pick == 0) {
           cash -= cost;
-          showToast('Проверка пройдена, штрафа нет.');
+          showToast('Inspection passed, no fine.');
         } else if (_rng.nextDouble() < 0.5) {
           final fine = cost * 3;
           cash -= fine;
           if (b != null) b.rep = max(1.0, b.rep - 0.3);
-          showToast('🚨 Штраф ${money(fine)}! Репутация пострадала.');
+          showToast('🚨 Fine ${money(fine)}! Reputation took a hit.');
         } else {
-          showToast('Повезло: проверка обошлась без штрафа.');
+          showToast('Lucky: the inspection ended without a fine.');
         }
         break;
       case 'blogger':
         if (pick == 0 && b != null) {
           cash -= cost;
           effects.add(Effect(EffectKind.demand, b.def.id, 1.5, 150));
-          showToast('Реклама запущена: спрос растёт!');
+          showToast('Ad is live: demand is rising!');
         }
         break;
       case 'supplier':
         if (pick == 0) {
           cash -= cost;
           effects.add(Effect(EffectKind.supply, null, 0.7, 240));
-          showToast('Контракт подписан: сырьё дешевле.');
+          showToast('Contract signed: supplies are cheaper.');
         }
         break;
       case 'competitor':
         if (pick == 0) {
           cash -= cost;
-          showToast('Акция удержала клиентов.');
+          showToast('The promo kept your customers.');
         } else if (b != null) {
           effects.add(Effect(EffectKind.demand, b.def.id, 0.8, 180));
-          showToast('Часть клиентов ушла к конкуренту.');
+          showToast('Some customers went to the competitor.');
         }
         break;
       case 'raise':
         if (pick == 0) {
           cash -= cost;
           if (b != null) b.rep = min(5.0, b.rep + 0.3);
-          showToast('Команда довольна. Репутация выросла.');
+          showToast('The team is happy. Reputation grew.');
         } else if (b != null && b.staff > 1 && _rng.nextDouble() < 0.5) {
           b.staff--;
-          showToast('Один сотрудник уволился.');
+          showToast('One employee quit.');
         } else {
-          showToast('Все остались, но настроение так себе.');
+          showToast('Everyone stayed, but morale is meh.');
         }
         break;
       case 'investor':
@@ -826,13 +826,13 @@ class GameState extends ChangeNotifier {
           final offer = (e.p['offer'] as double?) ?? 0.0;
           cash += offer;
           effects.add(Effect(EffectKind.revenue, null, 0.9, 360));
-          showToast('Инвестор вложил ${money(offer)}.');
+          showToast('The investor put in ${money(offer)}.');
         }
         break;
       case 'viral':
         if (b != null) {
           effects.add(Effect(EffectKind.demand, b.def.id, 1.6, 120));
-          showToast('Спрос на «${b.def.name}» взлетел!');
+          showToast('Demand for "${b.def.name}" soared!');
         }
         break;
     }
