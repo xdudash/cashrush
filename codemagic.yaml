@@ -1,0 +1,48 @@
+# Облачная сборка iOS-приложения Cash Rush и отправка в TestFlight.
+# Работает без Mac: всё собирается на macOS-машине Codemagic.
+#
+# Что нужно сделать один раз (подробности в README.md):
+#  1. В Codemagic: Teams → Integrations → App Store Connect → добавить API-ключ
+#     и назвать его так же, как указано ниже в integrations.app_store_connect.
+#  2. (папка ios/ уже в репозитории, её заново не создаём)
+#  2. В Apple Developer создать Bundle ID = значение BUNDLE_ID ниже.
+#  3. В App Store Connect создать приложение с этим Bundle ID.
+
+workflows:
+  ios-testflight:
+    name: iOS → TestFlight
+    max_build_duration: 45
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: codemagic   # имя API-ключа в настройках Codemagic
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.goapps.cashrush   # ← должен совпадать с BUNDLE_ID
+      vars:
+        BUNDLE_ORG: com.goapps                   # BUNDLE_ORG + ".cashrush" = Bundle ID
+        APP_NAME: Cash Rush
+    scripts:
+      - name: Зависимости
+        script: flutter pub get
+      - name: Иконка приложения
+        script: dart run flutter_launcher_icons
+      - name: Pods
+        script: find . -name "Podfile" -execdir pod install \;
+      - name: Подпись
+        script: xcode-project use-profiles
+      - name: Собрать IPA
+        script: |
+          flutter build ipa --release \
+            --build-name=1.0.0 \
+            --build-number=$BUILD_NUMBER \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
